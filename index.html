@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Darker View | رؤية أعمق</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Tajawal:wght@300;400;500;700&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #050505;
+    --deep: #0a0a0a;
+    --red: #8b0000;
+    --red-bright: #c0392b;
+    --gray: #1a1a1a;
+    --gray-mid: #2a2a2a;
+    --silver: #888;
+    --light: #ccc;
+    --white: #f0f0f0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Tajawal', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom Cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--red-bright);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(192,57,43,0.5);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transition: all 0.15s ease;
+  }
+
+  /* Grain Overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9000;
+    opacity: 0.3;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; width: 100%;
+    z-index: 1000;
+    padding: 20px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(to bottom, rgba(5,5,5,0.95), transparent);
+    backdrop-filter: blur(2px);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-decoration: none;
+  }
+
+  .nav-logo img {
+    width: 48px; height: 48px;
+    object-fit: contain;
+    filter: brightness(1);
+  }
+
+  .nav-logo-text {
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+    letter-spacing: 4px;
+    color: var(--white);
+    text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--silver);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 500;
+    transition: color 0.3s;
+    position: relative;
+  }
+
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 0; height: 1px;
+    background: var(--red-bright);
+    transition: width 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after { width: 100%; }
+
+  /* HERO */
+  .hero {
+    height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(139,0,0,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(139,0,0,0.08) 0%, transparent 50%),
+      linear-gradient(180deg, #050505 0%, #0d0d0d 50%, #050505 100%);
+  }
+
+  .hero-lines {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(139,0,0,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(139,0,0,0.05) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  }
+
+  .hero-content {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    animation: fadeUp 1.2s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 8px;
+    color: var(--red-bright);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    animation: fadeUp 1s ease 0.2s both;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(64px, 10vw, 130px);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -2px;
+    margin-bottom: 8px;
+    color: var(--white);
+    animation: fadeUp 1s ease 0.4s both;
+  }
+
+  .hero-title span {
+    color: var(--red-bright);
+    font-style: italic;
+  }
+
+  .hero-sub {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 10px;
+    color: var(--silver);
+    text-transform: uppercase;
+    margin-top: 16px;
+    margin-bottom: 40px;
+    animation: fadeUp 1s ease 0.6s both;
+  }
+
+  .hero-desc {
+    font-size: 16px;
+    color: var(--silver);
+    max-width: 480px;
+    margin: 0 auto 48px;
+    line-height: 1.9;
+    font-weight: 300;
+    animation: fadeUp 1s ease 0.8s both;
+  }
+
+  .hero-cta {
+    display: inline-flex;
+    gap: 16px;
+    animation: fadeUp 1s ease 1s both;
+  }
+
+  .btn-primary {
+    padding: 14px 36px;
+    background: var(--red);
+    color: var(--white);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 700;
+    border: 1px solid var(--red);
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--red-bright);
+    transform: translateX(-100%);
+    transition: transform 0.3s;
+  }
+
+  .btn-primary:hover::before { transform: translateX(0); }
+  .btn-primary span { position: relative; z-index: 1; }
+
+  .btn-outline {
+    padding: 14px 36px;
+    background: transparent;
+    color: var(--white);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 700;
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: all 0.3s;
+  }
+
+  .btn-outline:hover {
+    border-color: var(--white);
+    background: rgba(255,255,255,0.05);
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    animation: fadeUp 1s ease 1.2s both;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, var(--red-bright), transparent);
+    animation: scrollAnim 2s ease infinite;
+  }
+
+  @keyframes scrollAnim {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    51% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  /* DIVIDER */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 0 60px;
+    margin: 20px 0;
+  }
+
+  .divider-line { flex: 1; height: 1px; background: linear-gradient(to right, transparent, rgba(139,0,0,0.5), transparent); }
+  .divider-icon { color: var(--red); font-size: 18px; }
+
+  /* SECTIONS */
+  section { padding: 100px 60px; }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    margin-bottom: 60px;
+  }
+
+  .section-num {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    color: var(--red-bright);
+    letter-spacing: 4px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.1;
+  }
+
+  .section-title em {
+    color: var(--red-bright);
+    font-style: italic;
+  }
+
+  /* FEATURED VIDEO */
+  .featured {
+    background: var(--deep);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .featured::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 40%;
+    height: 100%;
+    background: radial-gradient(ellipse at right, rgba(139,0,0,0.1), transparent 70%);
+    pointer-events: none;
+  }
+
+  .featured-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .video-frame {
+    position: relative;
+    aspect-ratio: 16/9;
+    background: var(--gray);
+    overflow: hidden;
+    border: 1px solid rgba(139,0,0,0.3);
+  }
+
+  .video-frame iframe {
+    width: 100%; height: 100%;
+    border: none;
+  }
+
+  .video-overlay-tag {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: var(--red);
+    color: white;
+    font-size: 10px;
+    letter-spacing: 2px;
+    padding: 4px 10px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .featured-info { padding-right: 20px; }
+
+  .featured-tag {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--red-bright);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .featured-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    color: var(--white);
+  }
+
+  .featured-excerpt {
+    color: var(--silver);
+    font-size: 15px;
+    line-height: 1.9;
+    margin-bottom: 30px;
+    font-weight: 300;
+  }
+
+  .rating {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 30px;
+  }
+
+  .rating-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    font-weight: 900;
+    color: var(--red-bright);
+    line-height: 1;
+  }
+
+  .rating-label { color: var(--silver); font-size: 12px; line-height: 1.4; }
+
+  /* ARTICLES GRID */
+  .articles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .article-card {
+    background: var(--gray);
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+    group: true;
+  }
+
+  .article-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(5,5,5,0.95) 0%, rgba(5,5,5,0.3) 60%, transparent 100%);
+    z-index: 1;
+  }
+
+  .card-img {
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    filter: grayscale(60%) contrast(1.1);
+    transition: transform 0.6s ease, filter 0.4s;
+  }
+
+  .article-card:hover .card-img {
+    transform: scale(1.05);
+    filter: grayscale(20%) contrast(1.1);
+  }
+
+  .card-content {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 24px;
+    z-index: 2;
+    transform: translateY(8px);
+    transition: transform 0.3s;
+  }
+
+  .article-card:hover .card-content { transform: translateY(0); }
+
+  .card-cat {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--red-bright);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+
+  .card-meta {
+    font-size: 11px;
+    color: var(--silver);
+    letter-spacing: 1px;
+    opacity: 0;
+    transition: opacity 0.3s 0.1s;
+  }
+
+  .article-card:hover .card-meta { opacity: 1; }
+
+  /* CATEGORIES */
+  .categories { background: var(--black); }
+
+  .cats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+  }
+
+  .cat-item {
+    padding: 48px 32px;
+    background: var(--gray);
+    text-align: center;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s;
+    cursor: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cat-item::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 0; height: 2px;
+    background: var(--red-bright);
+    transition: width 0.4s;
+  }
+
+  .cat-item:hover::before { width: 100%; }
+  .cat-item:hover { background: var(--gray-mid); }
+
+  .cat-icon {
+    font-size: 36px;
+    margin-bottom: 16px;
+    display: block;
+    transition: transform 0.3s;
+  }
+
+  .cat-item:hover .cat-icon { transform: scale(1.1); }
+
+  .cat-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+
+  .cat-count {
+    font-size: 11px;
+    color: var(--silver);
+    letter-spacing: 2px;
+  }
+
+  /* DARK SECTION */
+  .dark-quote {
+    background: var(--red);
+    padding: 80px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .dark-quote::before {
+    content: '"';
+    position: absolute;
+    top: -40px; left: 40px;
+    font-family: 'Playfair Display', serif;
+    font-size: 300px;
+    color: rgba(0,0,0,0.15);
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .quote-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 3vw, 36px);
+    font-style: italic;
+    color: white;
+    max-width: 800px;
+    margin: 0 auto 24px;
+    line-height: 1.6;
+    position: relative;
+  }
+
+  .quote-author {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+  }
+
+  /* YOUTUBE SECTION */
+  .yt-section { background: var(--deep); }
+
+  .yt-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .yt-card {
+    background: var(--gray);
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: border-color 0.3s, transform 0.3s;
+  }
+
+  .yt-card:hover {
+    border-color: rgba(192,57,43,0.4);
+    transform: translateY(-4px);
+  }
+
+  .yt-thumb {
+    position: relative;
+    aspect-ratio: 16/9;
+    background: #111;
+    overflow: hidden;
+  }
+
+  .yt-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: grayscale(30%);
+    transition: filter 0.3s;
+  }
+
+  .yt-card:hover .yt-thumb img { filter: grayscale(0); }
+
+  .yt-play {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.3);
+    transition: background 0.3s;
+  }
+
+  .yt-card:hover .yt-play { background: rgba(139,0,0,0.4); }
+
+  .play-btn {
+    width: 52px; height: 52px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    transition: transform 0.3s;
+  }
+
+  .yt-card:hover .play-btn { transform: scale(1.1); }
+
+  .yt-info { padding: 20px; }
+
+  .yt-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    color: var(--white);
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  .yt-views {
+    font-size: 11px;
+    color: var(--silver);
+    letter-spacing: 1px;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--deep);
+    border-top: 1px solid rgba(139,0,0,0.3);
+    padding: 60px;
+    text-align: center;
+  }
+
+  .footer-logo {
+    font-family: 'Cinzel', serif;
+    font-size: 24px;
+    letter-spacing: 8px;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+
+  .footer-tagline {
+    font-size: 13px;
+    color: var(--silver);
+    letter-spacing: 2px;
+    margin-bottom: 40px;
+  }
+
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    list-style: none;
+    margin-bottom: 40px;
+  }
+
+  .footer-links a {
+    color: var(--silver);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+
+  .footer-links a:hover { color: var(--red-bright); }
+
+  .social-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+
+  .social-link {
+    width: 44px; height: 44px;
+    border: 1px solid rgba(255,255,255,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--silver);
+    text-decoration: none;
+    font-size: 18px;
+    transition: all 0.3s;
+  }
+
+  .social-link:hover {
+    border-color: var(--red-bright);
+    color: var(--red-bright);
+    background: rgba(139,0,0,0.1);
+  }
+
+  .footer-copy {
+    font-size: 11px;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 2px;
+  }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    section { padding: 60px 20px; }
+    .featured-grid { grid-template-columns: 1fr; }
+    .articles-grid { grid-template-columns: 1fr; }
+    .cats-grid { grid-template-columns: repeat(2, 1fr); }
+    .yt-grid { grid-template-columns: 1fr; }
+    .footer-links { flex-wrap: wrap; gap: 20px; }
+    .dark-quote { padding: 60px 20px; }
+    .divider { padding: 0 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <img src="/mnt/user-data/uploads/1000034122.png" alt="Darker View Logo" onerror="this.style.display='none'">
+    <span class="nav-logo-text">Darker View</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#articles">مقالات</a></li>
+    <li><a href="#categories">الأقسام</a></li>
+    <li><a href="#videos">يوتيوب</a></li>
+    <li><a href="#contact">تواصل</a></li>
+    <li><a href="https://www.facebook.com/share/1GhUMcqiUg/" target="_blank" style="color: #888;">f</a></li>
+    <li><a href="https://discord.gg/haDKMMUQt" target="_blank" style="color: #7289da;">⌨</a></li>
+    <li><a href="https://www.instagram.com/is_world_art_in_arabic_di" target="_blank" style="color: #888;">◈</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">منصة النقد السينمائي</p>
+    <h1 class="hero-title">Darker<br><span>View</span></h1>
+    <p class="hero-sub">رؤية أعمق — بلا قيود</p>
+    <p class="hero-desc">نقد سينمائي حر وجريء. أفلام، مسلسلات، أنمي — نتحدث عما لا يجرؤ الآخرون على قوله.</p>
+    <div class="hero-cta">
+      <a href="#articles" class="btn-primary"><span>استكشف المحتوى</span></a>
+      <a href="https://youtube.com/@darkerv-h3i" target="_blank" class="btn-outline">القناة</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- DIVIDER -->
+<div class="divider">
+  <div class="divider-line"></div>
+  <div class="divider-icon">✦</div>
+  <div class="divider-line"></div>
+</div>
+
+<!-- FEATURED VIDEO -->
+<section class="featured" id="featured">
+  <div class="featured-grid reveal">
+    <div class="video-frame">
+      <iframe src="https://www.youtube.com/embed/IHQvFDEzDd8" allowfullscreen></iframe>
+      <span class="video-overlay-tag">مميز</span>
+    </div>
+    <div class="featured-info">
+      <p class="featured-tag">⬛ آخر فيديو</p>
+      <h2 class="featured-title">تصويتي الخاص قبل جوائز حفل أفضل أنميات 2025 — Crunchyroll Nominations 🔴</h2>
+      <p class="featured-excerpt">رأيي الحقيقي بلا مجاملات في ترشيحات Crunchyroll لأفضل أنميات 2025 — قبل ما يقرر الجمهور، Darker View يقرر أولاً.</p>
+      <div class="rating">
+        <div class="rating-num">8.5</div>
+        <div class="rating-label">تقييم<br>داركر فيو</div>
+      </div>
+      <a href="#" class="btn-primary"><span>اقرأ المراجعة كاملة</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ARTICLES -->
+<section id="articles" style="background: var(--black); padding: 100px 0;">
+  <div style="padding: 0 60px;">
+    <div class="section-header reveal">
+      <span class="section-num">01</span>
+      <h2 class="section-title">آخر <em>المقالات</em></h2>
+    </div>
+  </div>
+  <div class="articles-grid reveal">
+    <!-- Card 1 -->
+    <div class="article-card">
+      <img src="https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?w=600&q=80" class="card-img" alt="">
+      <div class="card-content">
+        <p class="card-cat">🎬 أفلام</p>
+        <h3 class="card-title">حين تتحول السينما إلى جريمة نفسية</h3>
+        <p class="card-meta">داركر فيو · منذ يومين</p>
+      </div>
+    </div>
+    <!-- Card 2 -->
+    <div class="article-card">
+      <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&q=80" class="card-img" alt="">
+      <div class="card-content">
+        <p class="card-cat">⛩️ أنمي</p>
+        <h3 class="card-title">أنمي يكسر عقلك: تحليل ما وراء الصورة</h3>
+        <p class="card-meta">داركر فيو · منذ أسبوع</p>
+      </div>
+    </div>
+    <!-- Card 3 -->
+    <div class="article-card">
+      <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=600&q=80" class="card-img" alt="">
+      <div class="card-content">
+        <p class="card-cat">📺 مسلسلات</p>
+        <h3 class="card-title">المسلسل الذي لم يفهمه أحد — حتى الآن</h3>
+        <p class="card-meta">داركر فيو · منذ أسبوعين</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DARK QUOTE -->
+<div class="dark-quote reveal">
+  <p class="quote-text">"السينما الحقيقية ليست تلك التي تريحك — بل تلك التي تجعلك تتساءل لماذا أنت هنا أصلاً"</p>
+  <p class="quote-author">— Darker View</p>
+</div>
+
+<!-- CATEGORIES -->
+<section class="categories" id="categories">
+  <div class="section-header reveal">
+    <span class="section-num">02</span>
+    <h2 class="section-title">استكشف <em>الأقسام</em></h2>
+  </div>
+  <div class="cats-grid reveal">
+    <div class="cat-item">
+      <span class="cat-icon">🎬</span>
+      <h3 class="cat-name">أفلام</h3>
+      <p class="cat-count">أمريكية · عالمية</p>
+    </div>
+    <div class="cat-item">
+      <span class="cat-icon">⛩️</span>
+      <h3 class="cat-name">أنمي</h3>
+      <p class="cat-count">ياباني · داكن</p>
+    </div>
+    <div class="cat-item">
+      <span class="cat-icon">📺</span>
+      <h3 class="cat-name">مسلسلات</h3>
+      <p class="cat-count">أمريكية · يابانية</p>
+    </div>
+    <div class="cat-item">
+      <span class="cat-icon">🖤</span>
+      <h3 class="cat-name">المظلم</h3>
+      <p class="cat-count">مواضيع سوداوية</p>
+    </div>
+  </div>
+</section>
+
+<!-- YOUTUBE SECTION -->
+<section class="yt-section" id="videos">
+  <div class="section-header reveal">
+    <span class="section-num">03</span>
+    <h2 class="section-title">من <em>القناة</em></h2>
+  </div>
+  <div class="yt-grid reveal">
+    <div class="yt-card">
+      <div class="yt-thumb">
+        <img src="https://img.youtube.com/vi/IHQvFDEzDd8/maxresdefault.jpg" alt="Crunchyroll 2025" onerror="this.src='https://img.youtube.com/vi/IHQvFDEzDd8/0.jpg'">
+        <div class="yt-play">
+          <a href="https://youtu.be/IHQvFDEzDd8" target="_blank" style="text-decoration:none;">
+            <div class="play-btn">▶</div>
+          </a>
+        </div>
+      </div>
+      <div class="yt-info">
+        <h4 class="yt-title">تصويتي الخاص قبل جوائز حفل أفضل أنميات 2025 — Crunchyroll 🔴</h4>
+        <p class="yt-views">Darker View · يوتيوب</p>
+      </div>
+    </div>
+    <div class="yt-card">
+      <div class="yt-thumb">
+        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=500&q=80" alt="">
+        <div class="yt-play">
+          <a href="https://youtube.com/@darkerv-h3i" target="_blank" style="text-decoration:none;">
+            <div class="play-btn">▶</div>
+          </a>
+        </div>
+      </div>
+      <div class="yt-info">
+        <h4 class="yt-title">المزيد من فيديوهات Darker View على القناة</h4>
+        <p class="yt-views">Darker View · يوتيوب</p>
+      </div>
+    </div>
+    <div class="yt-card">
+      <div class="yt-thumb">
+        <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500&q=80" alt="">
+        <div class="yt-play">
+          <a href="https://youtube.com/@darkerv-h3i" target="_blank" style="text-decoration:none;">
+            <div class="play-btn">▶</div>
+          </a>
+        </div>
+      </div>
+      <div class="yt-info">
+        <h4 class="yt-title">اشترك في القناة لتصلك كل المقاطع الجديدة</h4>
+        <p class="yt-views">Darker View · يوتيوب</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DISCORD BANNER -->
+<section style="background: #1a1a2e; padding: 60px; text-align: center; border-top: 1px solid rgba(88,101,242,0.3); border-bottom: 1px solid rgba(88,101,242,0.3); position: relative; overflow: hidden;">
+  <div style="position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(88,101,242,0.08), transparent 70%); pointer-events: none;"></div>
+  <p style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 4px; color: #7289da; text-transform: uppercase; margin-bottom: 16px;">انضم إلى المجتمع</p>
+  <h3 style="font-family: 'Playfair Display', serif; font-size: 32px; color: white; margin-bottom: 12px;">سيرفر <em style="color: #7289da; font-style: italic;">Discord</em></h3>
+  <p style="color: #888; font-size: 15px; margin-bottom: 32px; max-width: 400px; margin-left: auto; margin-right: auto; line-height: 1.8;">ناقش، حلل، وانضم لمجتمع Darker View — المكان الذي لا رقابة فيه على الرأي.</p>
+  <a href="https://discord.gg/haDKMMUQt" target="_blank" style="display: inline-block; padding: 14px 40px; background: #5865f2; color: white; text-decoration: none; font-size: 12px; letter-spacing: 3px; text-transform: uppercase; font-weight: 700; transition: all 0.3s; border: 1px solid #5865f2;">⌨ انضم الآن</a>
+</section>
+
+<!-- FOOTER -->
+<footer id="contact">
+  <div class="footer-logo">DARKER VIEW</div>
+  <p class="footer-tagline">رؤية أعمق — بلا قيود</p>
+  <ul class="footer-links">
+    <li><a href="#">الرئيسية</a></li>
+    <li><a href="#">أفلام</a></li>
+    <li><a href="#">أنمي</a></li>
+    <li><a href="#">مسلسلات</a></li>
+    <li><a href="#">المظلم</a></li>
+  </ul>
+  <div class="social-links">
+    <a href="https://youtube.com/@darkerv-h3i" target="_blank" class="social-link" title="يوتيوب">▶</a>
+    <a href="https://www.facebook.com/share/1GhUMcqiUg/" target="_blank" class="social-link" title="فيسبوك">f</a>
+    <a href="https://discord.gg/haDKMMUQt" target="_blank" class="social-link" title="ديسكورد">⌨</a>
+    <a href="https://www.instagram.com/is_world_art_in_arabic_di" target="_blank" class="social-link" title="انستغرام">◈</a>
+  </div>
+  <p class="footer-copy">© 2024 DARKER VIEW · جميع الحقوق محفوظة</p>
+</footer>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx - 6 + 'px';
+    cursor.style.top = my - 6 + 'px';
+  });
+
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx - 18 + 'px';
+    ring.style.top = ry - 18 + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  // Scroll Reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(r => observer.observe(r));
+</script>
+</body>
+</html>
