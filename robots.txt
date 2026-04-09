@@ -2,4 +2,3 @@ User-agent: *
 Allow: /
 
 Sitemap: https://ismail20041211.github.io/Darker-view/sitemap.xml
-create robots.txt
