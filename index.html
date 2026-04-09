@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Darker View | رؤية أعمق</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Tajawal:wght@300;400;500;700&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--black:#050505;--deep:#0a0a0a;--red:#8b0000;--red2:#c0392b;--gray:#111;--gray2:#1a1a1a;--silver:#888;--light:#ccc;--white:#f0f0f0;}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--white);font-family:'Tajawal',sans-serif;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9000;opacity:0.3;}
+nav{position:fixed;top:0;width:100%;z-index:1000;padding:20px 60px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(to bottom,rgba(5,5,5,0.97),transparent);}
+.nav-logo{font-family:'Cinzel',serif;font-size:18px;letter-spacing:4px;color:var(--white);cursor:pointer;border:none;background:none;}
+.nav-links{display:flex;gap:32px;list-style:none;}
+.nav-links button{color:var(--silver);font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:500;transition:color .3s;cursor:pointer;background:none;border:none;font-family:'Tajawal',sans-serif;}
+.nav-links button:hover{color:var(--white);}
+
+/* PAGES - FIXED */
+.page{display:none !important;}
+.page.active{display:block !important;}
+
+.hero{height:100vh;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(139,0,0,.15) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(139,0,0,.08) 0%,transparent 50%),linear-gradient(180deg,#050505 0%,#0d0d0d 50%,#050505 100%);}
+.hero-lines{position:absolute;inset:0;background-image:linear-gradient(rgba(139,0,0,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(139,0,0,.05) 1px,transparent 1px);background-size:80px 80px;mask-image:radial-gradient(ellipse at center,black 30%,transparent 80%);}
+.hero-content{text-align:center;position:relative;z-index:2;animation:fadeUp 1.2s ease forwards;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+.hero-eyebrow{font-family:'Cinzel',serif;font-size:11px;letter-spacing:8px;color:var(--red2);text-transform:uppercase;margin-bottom:24px;}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(64px,10vw,130px);font-weight:900;line-height:.9;color:var(--white);margin-bottom:8px;}
+.hero-title span{color:var(--red2);font-style:italic;}
+.hero-sub{font-family:'Cinzel',serif;font-size:13px;letter-spacing:10px;color:var(--silver);text-transform:uppercase;margin:16px 0 48px;}
+.hero-cta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+.btn-p{padding:14px 36px;background:var(--red);color:var(--white);font-size:12px;letter-spacing:3px;text-transform:uppercase;font-weight:700;border:none;cursor:pointer;transition:background .3s;font-family:'Tajawal',sans-serif;}
+.btn-p:hover{background:var(--red2);}
+.btn-o{padding:14px 36px;background:transparent;color:var(--white);font-size:12px;letter-spacing:3px;text-transform:uppercase;font-weight:700;border:1px solid rgba(255,255,255,.2);cursor:pointer;transition:all .3s;font-family:'Tajawal',sans-serif;text-decoration:none;display:inline-block;}
+.btn-o:hover{border-color:var(--white);}
+.scroll-ln{width:1px;height:60px;background:linear-gradient(to bottom,var(--red2),transparent);margin:40px auto 0;animation:sa 2s ease infinite;}
+@keyframes sa{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+.dv{display:flex;align-items:center;gap:20px;padding:0 60px;margin:10px 0;}
+.dvl{flex:1;height:1px;background:linear-gradient(to right,transparent,rgba(139,0,0,.4),transparent);}
+section{padding:80px 60px;}
+.s-eye{font-family:'Cinzel',serif;font-size:10px;letter-spacing:4px;color:var(--red2);text-transform:uppercase;margin-bottom:12px;}
+.s-title{font-family:'Playfair Display',serif;font-size:clamp(32px,4vw,52px);font-weight:700;color:var(--white);line-height:1.1;margin-bottom:48px;}
+.s-title em{color:var(--red2);font-style:italic;}
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+.vframe{position:relative;aspect-ratio:16/9;background:var(--gray);border:1px solid rgba(139,0,0,.3);}
+.vframe iframe{width:100%;height:100%;border:none;}
+
+/* ARTICLES GRID - FIXED FOR MOBILE */
+.arts-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:0 60px;}
+
+/* ARTICLE CARD - FIXED CLICK */
+.acard{position:relative;overflow:hidden;cursor:pointer;background:var(--gray);border-radius:2px;display:flex;flex-direction:column;}
+.acard-img-wrap{position:relative;overflow:hidden;aspect-ratio:4/3;flex-shrink:0;}
+.acard-img{width:100%;height:100%;object-fit:cover;filter:grayscale(50%) contrast(1.1);transition:transform .6s,filter .4s;display:block;}
+.acard:hover .acard-img{transform:scale(1.05);filter:grayscale(10%);}
+.acard-body{padding:20px;flex:1;background:var(--gray);border-top:2px solid transparent;transition:border-color .3s;}
+.acard:hover .acard-body{border-top-color:var(--red2);}
+.acard-cat{font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;color:var(--red2);text-transform:uppercase;margin-bottom:8px;}
+.acard-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;line-height:1.3;color:var(--white);margin-bottom:10px;}
+.acard-exc{font-size:13px;color:var(--silver);line-height:1.6;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.acard-rtg{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:var(--red2);}
+.acard-dt{font-size:11px;color:var(--silver);margin-top:4px;}
+.acard-plain{background:var(--gray2);padding:28px;cursor:pointer;border:1px solid rgba(255,255,255,.05);transition:all .3s;border-radius:2px;}
+.acard-plain:hover{border-color:rgba(139,0,0,.4);background:var(--gray);}
+
+.cats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;}
+.cat-box{padding:48px 32px;background:var(--gray);text-align:center;cursor:pointer;position:relative;overflow:hidden;transition:background .3s;border:none;width:100%;font-family:'Tajawal',sans-serif;}
+.cat-box::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--red2);transition:width .4s;}
+.cat-box:hover::after{width:100%;}
+.cat-box:hover{background:var(--gray2);}
+.cat-icon{font-size:36px;margin-bottom:16px;display:block;transition:transform .3s;}
+.cat-box:hover .cat-icon{transform:scale(1.1);}
+.cat-name{font-family:'Playfair Display',serif;font-size:20px;color:var(--white);margin-bottom:6px;}
+.cat-sub{font-size:11px;color:var(--silver);letter-spacing:2px;}
+.yt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.yt-card{background:var(--gray);border:1px solid rgba(255,255,255,.05);overflow:hidden;transition:border-color .3s,transform .3s;}
+.yt-card:hover{border-color:rgba(192,57,43,.4);transform:translateY(-4px);}
+.yt-thumb{position:relative;aspect-ratio:16/9;overflow:hidden;}
+.yt-thumb img{width:100%;height:100%;object-fit:cover;filter:grayscale(30%);transition:filter .3s;}
+.yt-card:hover .yt-thumb img{filter:grayscale(0);}
+.yt-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.3);transition:background .3s;text-decoration:none;}
+.yt-card:hover .yt-play{background:rgba(139,0,0,.4);}
+.play-btn{width:52px;height:52px;background:rgba(255,255,255,.9);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.yt-info{padding:18px;}
+.yt-title{font-family:'Playfair Display',serif;font-size:16px;color:var(--white);margin-bottom:6px;line-height:1.4;}
+.yt-meta{font-size:11px;color:var(--silver);}
+.dark-quote{background:var(--red);padding:80px 60px;text-align:center;position:relative;overflow:hidden;}
+.dark-quote::before{content:'"';position:absolute;top:-40px;left:40px;font-family:'Playfair Display',serif;font-size:300px;color:rgba(0,0,0,.15);line-height:1;pointer-events:none;}
+.qt{font-family:'Playfair Display',serif;font-size:clamp(20px,3vw,34px);font-style:italic;color:white;max-width:800px;margin:0 auto 20px;line-height:1.6;position:relative;}
+.disc-sec{background:#1a1a2e;padding:60px;text-align:center;border-top:1px solid rgba(88,101,242,.3);position:relative;}
+.disc-sec::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(88,101,242,.08),transparent 70%);pointer-events:none;}
+footer{background:var(--deep);border-top:1px solid rgba(139,0,0,.3);padding:60px;text-align:center;}
+.foot-logo{font-family:'Cinzel',serif;font-size:24px;letter-spacing:8px;color:var(--white);margin-bottom:8px;}
+.foot-links{display:flex;justify-content:center;gap:36px;list-style:none;margin:24px 0;flex-wrap:wrap;}
+.foot-links button{color:var(--silver);font-size:12px;letter-spacing:2px;text-transform:uppercase;transition:color .3s;cursor:pointer;background:none;border:none;font-family:'Tajawal',sans-serif;}
+.foot-links button:hover{color:var(--red2);}
+.soc-links{display:flex;justify-content:center;gap:14px;margin-bottom:32px;}
+.soc-link{width:44px;height:44px;border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;color:var(--silver);text-decoration:none;font-size:16px;font-weight:700;transition:all .3s;}
+.soc-link:hover{border-color:var(--red2);color:var(--red2);}
+
+/* ARTICLE PAGE */
+.art-page{min-height:100vh;padding-top:80px;}
+.art-hero{position:relative;height:55vh;min-height:350px;overflow:hidden;display:flex;align-items:flex-end;}
+.art-hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(40%) brightness(0.5);}
+.art-hero-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(5,5,5,1) 0%,rgba(5,5,5,.4) 60%,transparent 100%);}
+.art-hero-ct{position:relative;z-index:2;padding:40px 60px;}
+.art-body{max-width:800px;margin:0 auto;padding:50px 40px;}
+.art-cat{font-family:'Cinzel',serif;font-size:10px;letter-spacing:4px;color:var(--red2);text-transform:uppercase;margin-bottom:14px;}
+.art-main-title{font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,50px);font-weight:900;line-height:1.15;}
+.art-meta{display:flex;align-items:center;gap:20px;padding:20px 0;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:40px;flex-wrap:wrap;}
+.art-rating{font-family:'Playfair Display',serif;font-size:42px;font-weight:900;color:var(--red2);line-height:1;}
+.art-rating small{font-size:18px;color:var(--silver);}
+.art-text{font-size:17px;line-height:2.1;color:var(--light);white-space:pre-wrap;}
+.back-btn{display:inline-flex;align-items:center;gap:8px;color:var(--silver);font-size:13px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:color .3s;margin-bottom:28px;background:none;border:none;font-family:'Tajawal',sans-serif;padding:0;}
+.back-btn:hover{color:var(--red2);}
+
+/* RESPONSIVE - FIXED */
+@media(max-width:900px){
+  nav{padding:16px 20px;}
+  .nav-links{gap:12px;}
+  .nav-links button{font-size:11px;letter-spacing:1px;}
+  section{padding:50px 20px;}
+  .arts-grid{grid-template-columns:1fr;padding:0 20px;gap:12px;}
+  .feat-grid{grid-template-columns:1fr;}
+  .cats-grid{grid-template-columns:repeat(2,1fr);}
+  .yt-grid{grid-template-columns:1fr;}
+  .dark-quote,.disc-sec{padding:50px 20px;}
+  footer{padding:40px 20px;}
+  .art-hero-ct{padding:24px 20px;}
+  .art-body{padding:30px 20px;}
+  .dv{padding:0 20px;}
+  .foot-links{gap:16px;}
+  .cat-box{padding:32px 16px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <button class="nav-logo" onclick="showHome()">DARKER VIEW</button>
+  <ul class="nav-links">
+    <li><button onclick="showHome()">الرئيسية</button></li>
+    <li><button onclick="showCat('أفلام')">أفلام</button></li>
+    <li><button onclick="showCat('أنمي')">أنمي</button></li>
+    <li><button onclick="showCat('مسلسلات')">مسلسلات</button></li>
+    <li><button onclick="showCat('المظلم')">المظلم</button></li>
+  </ul>
+</nav>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <section class="hero">
+    <div class="hero-bg"></div><div class="hero-lines"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">منصة النقد السينمائي</p>
+      <h1 class="hero-title">Darker<br><span>View</span></h1>
+      <p class="hero-sub">رؤية أعمق — بلا قيود</p>
+      <div class="hero-cta">
+        <button class="btn-p" onclick="scrollToArts()">استكشف المحتوى</button>
+        <a href="https://youtube.com/@darkerv-h3i" target="_blank" class="btn-o">القناة</a>
+      </div>
+      <div class="scroll-ln"></div>
+    </div>
+  </section>
+
+  <div class="dv"><div class="dvl"></div><span style="color:var(--red);font-size:16px;">✦</span><div class="dvl"></div></div>
+
+  <section style="background:var(--deep);">
+    <div class="feat-grid">
+      <div class="vframe"><iframe id="feat-iframe" src="https://www.youtube.com/embed/IHQvFDEzDd8" allowfullscreen></iframe></div>
+      <div>
+        <p class="s-eye">⬛ مراجعة الأسبوع</p>
+        <h2 id="feat-title" style="font-family:'Playfair Display',serif;font-size:clamp(20px,3vw,32px);font-weight:700;margin-bottom:16px;line-height:1.2;">تصوتي الخاص قبل جوائزحفل أفضل أنميات 2025 live crunchyroll Nominations🔴</h2>
+        <p id="feat-desc" style="color:var(--silver);font-size:15px;line-height:1.9;margin-bottom:20px;">تصوتي الخاص قبل جوائزحفل أفضل أنميات 2025 live crunchyroll Nominations🔴</p>
+        <div id="feat-rating" style="font-family:'Playfair Display',serif;font-size:52px;font-weight:900;color:var(--red2);line-height:1;margin-bottom:24px;">10<span style="font-size:20px;color:var(--silver);">/10</span></div>
+        <a href="https://youtube.com/@darkerv-h3i" target="_blank" class="btn-o">شاهد على القناة</a>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:var(--black);padding-bottom:80px;" id="arts-sec">
+    <p class="s-eye" style="padding:80px 60px 0;">01 — المحتوى</p>
+    <h2 class="s-title" style="padding:12px 60px 40px;">آخر <em>المقالات</em></h2>
+    <div class="arts-grid" id="arts-grid"></div>
+  </section>
+
+  <div class="dark-quote">
+    <p class="qt">"السينما الحقيقية ليست تلك التي تريحك — بل تلك التي تجعلك تتساءل لماذا أنت هنا أصلاً"</p>
+    <p style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:4px;color:rgba(255,255,255,.6);">— Darker View</p>
+  </div>
+
+  <section style="background:var(--black);">
+    <p class="s-eye">02 — الأقسام</p>
+    <h2 class="s-title">استكشف <em>الأقسام</em></h2>
+    <div class="cats-grid">
+      <button class="cat-box" onclick="showCat('أفلام')"><span class="cat-icon">🎬</span><h3 class="cat-name">أفلام</h3><p class="cat-sub" id="cc-أفلام">أمريكية · عالمية</p></button>
+      <button class="cat-box" onclick="showCat('أنمي')"><span class="cat-icon">⛩️</span><h3 class="cat-name">أنمي</h3><p class="cat-sub" id="cc-أنمي">ياباني · داكن</p></button>
+      <button class="cat-box" onclick="showCat('مسلسلات')"><span class="cat-icon">📺</span><h3 class="cat-name">مسلسلات</h3><p class="cat-sub" id="cc-مسلسلات">أمريكية · يابانية</p></button>
+      <button class="cat-box" onclick="showCat('المظلم')"><span class="cat-icon">🖤</span><h3 class="cat-name">المظلم</h3><p class="cat-sub" id="cc-المظلم">مواضيع سوداوية</p></button>
+    </div>
+  </section>
+
+  <section style="background:var(--deep);">
+    <p class="s-eye">03 — القناة</p>
+    <h2 class="s-title">من <em>القناة</em></h2>
+    <div class="yt-grid" id="yt-grid"></div>
+  </section>
+
+  <div class="disc-sec">
+    <p style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:4px;color:#7289da;text-transform:uppercase;margin-bottom:16px;position:relative;">انضم إلى المجتمع</p>
+    <h3 style="font-family:'Playfair Display',serif;font-size:32px;color:white;margin-bottom:12px;position:relative;">سيرفر <em style="color:#7289da;font-style:italic;">Discord</em></h3>
+    <p style="color:var(--silver);font-size:15px;margin-bottom:32px;max-width:400px;margin-left:auto;margin-right:auto;line-height:1.8;position:relative;">ناقش، حلل، وانضم لمجتمع Darker View.</p>
+    <a href="https://discord.gg/haDKMMUQt" target="_blank" style="position:relative;display:inline-block;padding:14px 40px;background:#5865f2;color:white;text-decoration:none;font-size:12px;letter-spacing:3px;text-transform:uppercase;font-weight:700;">⌨ انضم الآن</a>
+  </div>
+
+  <footer>
+    <div class="foot-logo">DARKER VIEW</div>
+    <p style="font-size:13px;color:var(--silver);margin-bottom:8px;">رؤية أعمق — بلا قيود</p>
+    <ul class="foot-links">
+      <li><button onclick="showHome()">الرئيسية</button></li>
+      <li><button onclick="showCat('أفلام')">أفلام</button></li>
+      <li><button onclick="showCat('أنمي')">أنمي</button></li>
+      <li><button onclick="showCat('مسلسلات')">مسلسلات</button></li>
+      <li><button onclick="showCat('المظلم')">المظلم</button></li>
+    </ul>
+    <div class="soc-links">
+      <a href="https://youtube.com/@darkerv-h3i" target="_blank" class="soc-link">▶</a>
+      <a href="https://www.facebook.com/share/1GhUMcqiUg/" target="_blank" class="soc-link">f</a>
+      <a href="https://discord.gg/haDKMMUQt" target="_blank" class="soc-link">⌨</a>
+      <a href="https://www.instagram.com/is_world_art_in_arabic_di" target="_blank" class="soc-link">◈</a>
+    </div>
+    <p style="font-size:11px;color:rgba(255,255,255,.2);">© 2025 DARKER VIEW · جميع الحقوق محفوظة</p>
+  </footer>
+</div>
+
+<!-- ARTICLE PAGE -->
+<div id="page-article" class="page">
+  <div class="art-page">
+    <div class="art-hero" id="art-hero">
+      <img src="" alt="" class="art-hero-img" id="art-hero-img">
+      <div class="art-hero-ov"></div>
+      <div class="art-hero-ct">
+        <p class="art-cat" id="art-cat"></p>
+        <h1 class="art-main-title" id="art-title"></h1>
+      </div>
+    </div>
+    <div class="art-body">
+      <button class="back-btn" onclick="showHome()">← العودة للرئيسية</button>
+      <div class="art-meta">
+        <span style="font-size:13px;color:var(--silver);" id="art-date"></span>
+        <div class="art-rating" id="art-rating"></div>
+      </div>
+      <div class="art-text" id="art-text"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CAT PAGE -->
+<div id="page-cat" class="page">
+  <div style="min-height:100vh;padding-top:120px;">
+    <div style="padding:0 60px 40px;">
+      <button class="back-btn" onclick="showHome()">← العودة للرئيسية</button>
+      <p class="art-cat" id="cat-eye"></p>
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,48px);font-weight:700;" id="cat-title"></h2>
+    </div>
+    <div style="padding:0 20px 80px;" id="cat-grid"></div>
+  </div>
+</div>
+
+<script>
+// ===== المقالات الثابتة =====
+const ARTICLES = [
+  {
+    "id": 1775742909821,
+    "title": "مراجعة : (بحرية حرق ) the summer hikaru died",
+    "cat": "أفلام",
+    "rating": "8.6",
+    "img": "https://scontent.ftng4-1.fna.fbcdn.net/v/t39.30808-6/582645836_122202262916545341_6569858727362669470_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=7b2446&_nc_eui2=AeGf6MG5Wtnfg6w3ppDloh_C0804NMVhdtvTzTg0xWF226EuF9_0lOBoEBja46BRceFwP8i66B3RGsXsZ0DRzyXk&_nc_ohc=4bbDuUlGTEsQ7kNvwG6_87X&_nc_oc=AdqjSGBr7vT6lCzG0CuBQ1zm9-SsPeWpuGa4GGa569ldz1FDiu6ssRpqP1yFSds2Nxw&_nc_zt=23&_nc_ht=scontent.ftng4-1.fna&_nc_gid=E1ciWPvYd2k7HqasCGApVA&_nc_ss=7a3a8&oh=00_Af3gn6bQEm_CkImq1k_unVWHg-mQIFvt7hT_54smmYcDmw&oe=69DD81F3",
+    "content": "مراجعة : (بحرية حرق )\nالعمل كموسم اول قد أدى تقريبًا كل ما عليه\nترقب، شدّ للانتباه، أحداث وشخصيات مثيرة،\nرمزيات وموضوعات تشجع على التأمل في كل حلقة،\nوتميز بكليف هانغرز قوية في نهاية بعض الحلقات.\nصراحة هذا العمل وفّى بكل وعوده تقريبا كأنمي سنين.\nفالعمل ترك مجموعة من الأسئلة،\nإلا أنه أجاب تقريبًا عن أغلبها بنهاية جد رائعة ومتميزة في نظري،\nبتويست كان منطقيًا إلى حد كبير.\nوأحيي المانغاكا على هذا المنحى الذي أخذه منذ الحلقة الأولى وبصم عليه في الحلقة الأخيرة.\nوهنا أتكلم عن العنصر النفسي والعاطفي الذي ناقشه العمل من خلال شخصياته،\nوبالأخص الشخصيتين الرئيسيتين.\n+جوانب القوة\n-الشخصيات\nوهذا يؤدي بنا إلى اول أول جانب قوة في العمل، وهم الشخصيات\nبحيت حمل الانمي العديد من الشخصيات منها الرئيسية\nوايضا بروز بعض الشخصيات التانوية والتي كانت كتيرة نوعاما\nمتل شخصية المحقق الذي كانت تحمل عامل الغموض حول ماهيتها\nوماهي الشركة التي يعمل لصللحها\nماهي أهذافها كل هذه الاشياء لم يجب العمل عنها لحد الان\nلم نعرف عنها الكتير لحد الان\nصراحتا من الشخصيات المتيرة للهتمام\nولدينا ايضا العديد من الشخصيات الاخرى والتي ساهمت في احدات القصة\n إلا ان ابرزها واكتر ماضهر على الشاشة\nوهما الشخصيتين الرئيسيتين\nيمكن القول ان صراع الشخصيات الرىيسية ذاخل العمل كان على الصعيدين النفسي والإجتماعي لهدين الشخصيتين\nوتعد علاقة بطلي القصة علاقة معقدة \nلكن مبنية بشكل منطقي مند بداية احدات\nوصولا للحلقة الأخيرة\nمع عامل الغموض مشوق وداىما ماننتضر إجابات واسىلة اخرى وهذا ساهم فيه كتيرا طريقة سرد الاحدات والإنتقال من شخصية لأخرى.\nوساهم العامل الذرامي للشخصيات في ترجمة العقد النفسية للشخصيات والتناقض الحاصل لها على الشاشة\n-الشر ذاخل الأنمي\nومن خلال ذكر التناقض لا ننسى الحديت عن عامل الشر في هذا العمل\nفعامل الشر كان مميزا نوعا ما\nفإذا اردت تحديد عامل الشر فسيكون على مستوى العديد من الاشياء غموض الكاىنات غموض اسرار القرية غموض بعض اهداف الشخصيات\nفهذا يوصلنا إلى عامل شر متفرق في هذا العمل\nإلا ان هذا لم يجعل من القصة والأحدات متبعترة وغير مفهومة بل العكس\nساهم سرد الأحدات المتقن\nفي شرح كل الاشياء المهمة بصفة عامة\nمن خلال مسار قرارات الشخصيات\nومحاولاتها في فهم المجهول جعل من كل حدت خطوة مهمة\nفي الكشف عن الكتير من الاشياء\nذاخل القصة.\nوعندما ناتي لعيوب العمل\n+العيوب\n-الإنتاج\nفتقريبا لم تكن موجودة لاكن لو اردت التعبير على ماازعجني طوال المشاهدة\nفقد كان التفاوت بيت المشاهد في التحريك 2d\nهنا لم يكن افضل شيء بل كان مزعج في بعض المرات\nوليس ذاىما\nاما من ناحية اسلوب الرسم فقد كان مقبولا نوعا ما\nلاكن كان يحتاج إلى جودة أكتر في إضفاء القليل من الواقعية كعمل انمي.\nوممكن ان الميزانية كانت محدودة لهذا العمل  فهذا معروف عن شركة إنتاج كنتفليكس\nإلا ان المحصلة كانت اكتر من ممتازة في كتير من جوانب العمل.\n⭐وأخيرًا، تقييمي للأنمي هو 8.6/10.\nآرائكم عن العمل في التعليقات⬇️ سلام👋.",
+    "date": "٩‏/٤‏/٢٠٢٦"
+  }
+];
+
+const VIDEOS = [];
+
+function escHtml(v) {
+  return String(v ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function normalizeYTId(input) {
+  const s = String(input ?? '');
+  const m = s.match(/[a-zA-Z0-9_-]{11}/);
+  return m ? m[0] : '';
+}
+
+// ===== دمج المقالات من لوحة التحكم =====
+function getAllArticles() {
+  let dyn = [];
+  try {
+    const s = localStorage.getItem('dv_data');
+    if (s) {
+      const d = JSON.parse(s);
+      if (Array.isArray(d.articles) && d.articles.length) dyn = d.articles;
+    }
+  } catch(e) {}
+  const titles = dyn.map(a => a.title);
+  return [...dyn, ...ARTICLES.filter(a => !titles.includes(a.title))];
+}
+
+function getAllVideos() {
+  try {
+    const s = localStorage.getItem('dv_data');
+    if (s) {
+      const d = JSON.parse(s);
+      if (Array.isArray(d.videos) && d.videos.length) return d.videos;
+    }
+  } catch(e) {}
+  return VIDEOS;
+}
+
+function getFeatured() {
+  try {
+    const s = localStorage.getItem('dv_data');
+    if (s) {
+      const d = JSON.parse(s);
+      if (d.featured) return d.featured;
+    }
+  } catch(e) {}
+  return null;
+}
+
+// ===== NAVIGATION =====
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  window.scrollTo({top: 0, behavior: 'auto'});
+}
+
+function showHome() {
+  showPage('home');
+  renderAll();
+}
+
+function scrollToArts() {
+  const el = document.getElementById('arts-sec');
+  if (el) el.scrollIntoView({behavior:'smooth'});
+}
+
+// ===== فتح المقالة =====
+function openArticle(id) {
+  const all = getAllArticles();
+  const a = all.find(x => String(x.id) === String(id));
+  if (!a) return;
+
+  document.getElementById('art-cat').textContent = a.cat;
+  document.getElementById('art-title').textContent = a.title;
+  document.getElementById('art-date').textContent = a.date || '';
+  document.getElementById('art-rating').innerHTML = a.rating ? `${a.rating}<small>/10</small>` : '';
+  document.getElementById('art-text').textContent = a.content;
+
+  const img = document.getElementById('art-hero-img');
+  const hero = document.getElementById('art-hero');
+  if (a.img) {
+    img.src = a.img;
+    img.style.display = 'block';
+    hero.style.minHeight = '350px';
+  } else {
+    img.style.display = 'none';
+    hero.style.minHeight = '150px';
+  }
+
+  showPage('article');
+}
+
+function showCat(cat) {
+  document.getElementById('cat-eye').textContent = cat;
+  document.getElementById('cat-title').innerHTML = `مقالات <em style="color:var(--red2);font-style:italic;">${cat}</em>`;
+  const arts = getAllArticles().filter(a => a.cat === cat);
+  const grid = document.getElementById('cat-grid');
+  if (!arts.length) {
+    grid.innerHTML = `<div style="text-align:center;padding:80px 20px;color:var(--silver);">
+      <div style="font-size:60px;opacity:.3;margin-bottom:20px;">${cat==='أفلام'?'🎬':cat==='أنمي'?'⛩️':cat==='مسلسلات'?'📺':'🖤'}</div>
+      <p style="font-size:18px;">لا توجد مقالات في هذا القسم بعد</p>
+    </div>`;
+  } else {
+    grid.innerHTML = `<div class="arts-grid">${arts.map(a => cardHTML(a)).join('')}</div>`;
+  }
+  showPage('cat');
+}
+
+// ===== CARD HTML =====
+function cardHTML(a) {
+  const id = a.id;
+  const safeCat = escHtml(a.cat);
+  const safeTitle = escHtml(a.title);
+  const safeContent = escHtml((a.content || '').substring(0, 120));
+  const safeDate = escHtml(a.date || '');
+  const safeRating = escHtml(a.rating || '');
+  const safeImg = escHtml(a.img || '');
+
+  if (a.img) {
+    return `
+    <div class="acard" onclick="openArticle('${id}')">
+      <div class="acard-img-wrap">
+        <img src="${safeImg}" class="acard-img" alt="${safeTitle}" onerror="this.parentElement.style.display='none'">
+      </div>
+      <div class="acard-body">
+        <p class="acard-cat">${safeCat}</p>
+        <h3 class="acard-title">${safeTitle}</h3>
+        <p class="acard-exc">${safeContent}...</p>
+        ${a.rating ? `<div class="acard-rtg">${safeRating}/10</div>` : ''}
+        <p class="acard-dt">${safeDate}</p>
+      </div>
+    </div>`;
+  }
+  return `
+  <div class="acard-plain" onclick="openArticle('${id}')">
+    <p style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;color:var(--red2);margin-bottom:12px;">${safeCat}</p>
+    <h3 style="font-family:'Playfair Display',serif;font-size:20px;margin-bottom:12px;line-height:1.3;">${safeTitle}</h3>
+    <p style="color:var(--silver);font-size:13px;line-height:1.7;margin-bottom:16px;">${safeContent}...</p>
+    ${a.rating ? `<div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:var(--red2);">${safeRating}/10</div>` : ''}
+    <p style="font-size:11px;color:var(--silver);margin-top:8px;">${safeDate}</p>
+  </div>`;
+}
+
+// ===== RENDER =====
+function renderArticles() {
+  const all = getAllArticles();
+  const grid = document.getElementById('arts-grid');
+  if (!all.length) {
+    grid.innerHTML = `<div style="text-align:center;padding:60px;color:var(--silver);">
+      <div style="font-size:48px;opacity:.3;margin-bottom:16px;">📝</div>
+      <p>لا توجد مقالات بعد</p>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = all.slice(0, 6).map(a => cardHTML(a)).join('');
+}
+
+function renderVideos() {
+  const vids = getAllVideos();
+  const grid = document.getElementById('yt-grid');
+  grid.innerHTML = vids.slice(0, 3).map(v => {
+    const id = normalizeYTId(v.ytId || v.url);
+    const safeTitle = escHtml(v.title || 'فيديو');
+    const safeCat = escHtml(v.cat || 'يوتيوب');
+    const thumb = id ? `https://img.youtube.com/vi/${id}/maxresdefault.jpg` : '';
+    const fallbackThumb = id ? `https://img.youtube.com/vi/${id}/0.jpg` : '';
+    const href = id ? `https://youtu.be/${id}` : '#';
+    return `<div class="yt-card">
+      <div class="yt-thumb">
+        <img src="${thumb}" alt="${safeTitle}" onerror="this.src='${fallbackThumb}'">
+        <a href="${href}" ${id ? 'target="_blank"' : ''} class="yt-play">
+          <div class="play-btn">▶</div>
+        </a>
+      </div>
+      <div class="yt-info">
+        <h4 class="yt-title">${safeTitle}</h4>
+        <p class="yt-meta">Darker View · ${safeCat}</p>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderFeatured() {
+  const f = getFeatured();
+  if (!f) return;
+  const id = normalizeYTId(f.url) || 'IHQvFDEzDd8';
+  document.getElementById('feat-iframe').src = `https://www.youtube.com/embed/${id}`;
+  document.getElementById('feat-title').textContent = f.title || '';
+  document.getElementById('feat-desc').textContent = f.desc || '';
+  document.getElementById('feat-rating').innerHTML = `${escHtml(f.rating || '')}<span style="font-size:20px;color:var(--silver);">/10</span>`;
+}
+
+function renderCounts() {
+  const all = getAllArticles();
+  ['أفلام','أنمي','مسلسلات','المظلم'].forEach(cat => {
+    const n = all.filter(a => a.cat === cat).length;
+    const el = document.getElementById('cc-' + cat);
+    if (!el) return;
+    if (n > 0) el.textContent = n + ' مقال';
+    else el.textContent = cat==='أفلام'?'أمريكية · عالمية':cat==='أنمي'?'ياباني · داكن':cat==='مسلسلات'?'أمريكية · يابانية':'مواضيع سوداوية';
+  });
+}
+
+function renderAll() {
+  renderFeatured();
+  renderArticles();
+  renderVideos();
+  renderCounts();
+}
+
+renderAll();
+</script>
+</body>
+</html>
