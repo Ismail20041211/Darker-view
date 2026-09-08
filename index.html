@@ -176,6 +176,44 @@ footer{background:var(--deep);padding:80px 60px 40px;border-top:1px solid rgba(2
 .modal-title{font-family:'Playfair Display',serif;font-size:28px;margin-bottom:24px;color:var(--white);}
 </style>
 </head>
+  <!-- المكان الذي ستظهر فيه المقالات في موقعك -->
+<div id="posts-container"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  // استبدل هذه البيانات بالبيانات التي استخرجتها من Firebase Console
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  async function getPosts() {
+    const container = document.getElementById("posts-container");
+    const querySnapshot = await getDocs(collection(db, "posts"));
+    
+    container.innerHTML = "";
+    querySnapshot.forEach((doc) => {
+      const post = doc.data();
+      container.innerHTML += `
+        <div class="post">
+          <h2>${post.title || ''}</h2>
+          <p>${post.content || ''}</p>
+        </div>
+      `;
+    });
+  }
+
+  getPosts();
+</script>
 <body>
 
 <nav>
